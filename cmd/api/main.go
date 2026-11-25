@@ -36,8 +36,9 @@ func main() {
 	// NewPostService(postRepo, userRepo)
 	// NewCommentService(commentRepo, postRepo)
 
-	// TODO: Создать EventLogger с EVENT_LOG_PATH (по умолчанию logs.txt),
-	// вызвать Start() до запуска HTTP-сервера и обработать ошибку конструктора.
+	// TODO: Создать EventLogger с EVENT_LOG_PATH (по умолчанию
+	// ./logs/events.log), вызвать Start() до запуска HTTP-сервера и обработать
+	// ошибку конструктора. Каждое событие worker пишет и в консоль, и в файл.
 	// TODO: Инициализировать handlers
 	// NewAuthHandler(userService), NewPostHandler(postService, eventLogger), NewCommentHandler(commentService, eventLogger)
 

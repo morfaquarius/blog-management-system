@@ -13,7 +13,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o api ./api
+RUN CGO_ENABLED=0 GOOS=linux go build -o blog-api ./cmd/api
 
 # Runtime stage
 FROM scratch
@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=builder /app/migrations ./migrations
 
 # Copy built application from builder
-COPY --from=builder /app/api .
+COPY --from=builder /app/blog-api .
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Expose port
@@ -32,4 +32,4 @@ EXPOSE 8080
 ENV MIGRATIONS_DIR=/app/migrations
 
 # Run application
-CMD ["./api"]
+CMD ["./blog-api"]

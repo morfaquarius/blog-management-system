@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Раскомментируйте сервис после реализации HTTP-сервера в api/main.go.
+  # Раскомментируйте сервис после реализации HTTP-сервера в cmd/api/main.go.
   # Пока точка входа является заглушкой, приложение не обслуживает API.
   # app:
   #   build: .
@@ -33,9 +33,11 @@ services:
   #     JWT_SECRET: ${JWT_SECRET:?Задайте JWT_SECRET в .env}
   #     JWT_EXPIRY_HOURS: ${JWT_EXPIRY_HOURS:-24}
   #     MIGRATIONS_DIR: /app/migrations
-  #     EVENT_LOG_PATH: /app/logs.txt
+  #     EVENT_LOG_PATH: /app/logs/events.log
   #     SERVER_HOST: 0.0.0.0
   #     SERVER_PORT: 8080
+  #   volumes:
+  #     - ./logs:/app/logs
   #   depends_on:
   #     db:
   #       condition: service_healthy
