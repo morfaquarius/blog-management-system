@@ -20,29 +20,34 @@ func NewPostService(postRepo repository.PostRepository, userRepo repository.User
 	}
 }
 
-// TODO: Реализовать Create()
-// Валидировать, создать пост, сохранить в БД, вернуть Post
+// TODO: Реализовать Create() в internal/service/post_service.go.
+// Провалидируйте req, проверьте что userID положительный и пользователь
+// существует (userRepo), затем сформируйте model.Post с AuthorID=userID и
+// сохраните через postRepo.Create. Верните созданную модель с заполненным ID;
+// authorID не берите из клиентского DTO.
 func (s *PostService) Create(ctx context.Context, userID int, req *model.PostCreateRequest) (*model.Post, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetByID()
-// Получить пост по ID, вернуть Post или ошибку
+// TODO: Реализовать GetByID(): отклонить неположительный ID, запросить
+// postRepo.GetByID и вернуть ErrPostNotFound при согласованном nil-результате.
 func (s *PostService) GetByID(ctx context.Context, id int) (*model.Post, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetAll()
-// Валидировать limit/offset, получить посты, вернуть слайс и общее количество
+// TODO: Реализовать GetAll(): проверить limit 1-100 и offset >= 0, получить
+// страницу из postRepo.GetAll и общий total из GetTotalCount. Если любой запрос
+// завершается ошибкой, верните ее; не возвращайте частичный успех.
 func (s *PostService) GetAll(ctx context.Context, limit, offset int) ([]*model.Post, int, error) {
 	// TODO: реализовать
 	return nil, 0, nil
 }
 
-// TODO: Реализовать GetByAuthor()
-// Валидировать limit/offset, получить посты автора, вернуть слайс и общее количество
+// TODO: Реализовать GetByAuthor(): проверить authorID > 0, limit 1-100 и
+// offset >= 0; получить страницу и total через методы репозитория по автору.
+// Этот сценарий нужен только если добавлен необязательный маршрут автора.
 func (s *PostService) GetByAuthor(ctx context.Context, authorID int, limit, offset int) ([]*model.Post, int, error) {
 	// TODO: реализовать
 	return nil, 0, nil

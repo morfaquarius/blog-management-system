@@ -20,15 +20,18 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-// TODO: Добавить структуру JWTManager с полями secretKey []byte и ttl time.Duration
-// Реализовать конструктор NewJWTManager(secretKey string, ttlHours int) (*JWTManager, error)
+// JWTManager содержит ключ подписи и срок жизни токенов. Создавайте один
+// экземпляр из конфигурации при старте и передавайте его сервису пользователей
+// и AuthMiddleware; не создавайте новый ключ на каждый запрос.
 type JWTManager struct {
 	secretKey []byte
 	ttl       time.Duration
 }
 
-// TODO: Реализовать конструктор NewJWTManager.
-// Вернуть ошибку при пустом секрете или неположительном сроке действия.
+// TODO: Реализовать NewJWTManager в pkg/auth/jwt.go.
+// Отклоняйте пустой/пробельный secretKey и ttlHours <= 0; срок в часах
+// преобразуйте в time.Duration. Ошибка должна сообщать о неверной конфигурации,
+// не включая сам ключ.
 func NewJWTManager(secretKey string, ttlHours int) (*JWTManager, error) {
 	// Проверьте непустой секрет и положительный TTL. Секрет должен поступать из
 	// конфигурации, не храниться в исходном коде и не попадать в логи.
@@ -36,7 +39,9 @@ func NewJWTManager(secretKey string, ttlHours int) (*JWTManager, error) {
 	return nil, nil
 }
 
-// TODO: Реализовать метод GenerateToken(userID int, email, username string) (string, time.Time, error)
+// TODO: Реализовать GenerateToken для вызова из UserService.Register и Login.
+// Принимает идентификатор и публичные данные пользователя; не добавляйте пароль,
+// его хеш или другие секреты в claims.
 // - Создать Claims со сроком действия = now + m.ttl
 // - Установить IssuedAt, NotBefore, ExpiresAt, Issuer, Subject в Claims
 // - Подписать токен методом HS256 секретным ключом
@@ -48,7 +53,9 @@ func (m *JWTManager) GenerateToken(userID int, email, username string) (string, 
 	return "", time.Time{}, nil
 }
 
-// TODO: Реализовать метод ValidateToken(tokenString string) (*Claims, error)
+// TODO: Реализовать ValidateToken для вызова AuthMiddleware.RequireAuth.
+// Метод возвращает claims только после успешной проверки подписи, алгоритма и
+// срока действия; ошибки сопоставляются с ErrInvalidToken/ErrExpiredToken.
 // - Распарсить токен с проверкой подписи через jwt.ParseWithClaims
 // - Извлечь Claims из токена
 // - Проверить что token.Valid == true и claims != nil

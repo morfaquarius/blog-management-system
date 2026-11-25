@@ -13,9 +13,10 @@ func NewLoggingMiddleware(logger *log.Logger) *LoggingMiddleware {
 	return &LoggingMiddleware{logger: logger}
 }
 
-// TODO: Реализовать метод Logger(next http.Handler) http.Handler
-// Логировать в консоль каждый запрос: IP-адрес, метод, путь, статус-код и время
-// выполнения. Не логировать Authorization или тело запроса с паролем.
+// TODO: Реализовать Logger как middleware для каждого HTTP-запроса.
+// Оберните ResponseWriter, запомните фактический статус (по умолчанию 200),
+// измерьте время обработки и запишите IP/метод/путь/статус/duration через
+// переданный logger. Не записывайте заголовок Authorization или тело запроса.
 func (m *LoggingMiddleware) Logger(next http.Handler) http.Handler {
 	// Обертка ResponseWriter должна фиксировать статус при WriteHeader; если
 	// handler ничего не записал, HTTP подразумевает статус 200.
@@ -25,9 +26,10 @@ func (m *LoggingMiddleware) Logger(next http.Handler) http.Handler {
 	})
 }
 
-// TODO: Реализовать метод Recovery(next http.Handler) http.Handler
-// Перехватить панику используя defer и recover()
-// Залогировать ошибку и вернуть 500 Internal Server Error
+// TODO: Реализовать Recovery как middleware на внешнем уровне роутера.
+// defer/recover должен перехватить panic, записать причину в серверный лог,
+// не раскрывая stack trace клиенту, и вернуть HTTP 500, если ответ еще
+// не начал отправляться. Не пытайтесь писать второй статус после WriteHeader.
 func (m *LoggingMiddleware) Recovery(next http.Handler) http.Handler {
 	// Не раскрывайте клиенту детали panic. Если заголовки уже отправлены,
 	// нельзя безопасно записать новый ответ со статусом 500.
@@ -37,9 +39,10 @@ func (m *LoggingMiddleware) Recovery(next http.Handler) http.Handler {
 	})
 }
 
-// TODO: Реализовать метод CORS(next http.Handler) http.Handler
-// Добавить CORS заголовки (Allow-Origin, Allow-Methods, Allow-Headers)
-// Обработать OPTIONS запрос
+// TODO: Реализовать CORS middleware и согласовать разрешенные origin с
+// окружением/требованиями API. Установите нужные CORS-заголовки до next;
+// OPTIONS preflight обработайте без вызова handler и завершите подходящим
+// успешным статусом. Не отражайте произвольный Origin без проверки.
 func (m *LoggingMiddleware) CORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// TODO: реализовать
@@ -47,7 +50,8 @@ func (m *LoggingMiddleware) CORS(next http.Handler) http.Handler {
 	})
 }
 
-// responseWriter обертка для ResponseWriter чтобы перехватить статус код
+// responseWriter фиксирует первый статус, записанный downstream handler.
+// Учитывайте, что если Write вызван без WriteHeader, net/http отправляет 200.
 type responseWriter struct {
 	http.ResponseWriter
 	statusCode int

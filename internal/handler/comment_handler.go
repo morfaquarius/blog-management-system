@@ -18,31 +18,30 @@ func NewCommentHandler(commentService service.CommentServiceInterface, eventLogg
 	}
 }
 
-// Create обрабатывает POST /posts/{id}/comments
-// TODO: Получить userID из контекста, извлечь postID, распарсить JSON, валидировать,
-// вызвать commentService.Create(). Вернуть CommentResponse (201) или ошибку
-// ID бери из chi.URLParam(r, "id") и проверяй через strconv.Atoi; тело содержит
-// {"text":"..."}, а post_id из JSON принимать нельзя.
-// После успешного создания передайте в eventLogger ID автора и комментария.
+// Create обрабатывает защищенный POST /posts/{id}/comments. Возьмите authorID
+// из auth context, postID — из chi.URLParam(r, "id") с проверкой strconv.Atoi,
+// декодируйте {"text":"..."} и вызовите сервис. Не принимайте post_id/author_id
+// из JSON. Верните CommentResponse со статусом 201; событие в eventLogger
+// добавляйте только после успешной записи, используя ID автора и комментария.
 func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// GetByPost обрабатывает GET /posts/{id}/comments?limit=10&offset=0
-// TODO: Извлечь postID, получить limit и offset, валидировать,
-// вызвать commentService.GetByPost(). Вернуть список комментариев и общее количество
+// GetByPost обрабатывает публичный GET /posts/{id}/comments. Проверьте
+// положительный postID и пагинацию (defaults limit=10, offset=0; limit 1-100),
+// вызовите сервис и верните {"items":[...],"total":N}.
 func (h *CommentHandler) GetByPost(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// respondWithJSON отправляет JSON ответ
-// TODO: Установить Content-Type, WriteHeader, закодировать JSON
+// respondWithJSON устанавливает application/json, записывает статус и кодирует
+// один JSON-ответ; после записи статуса не отправляйте другой ответ.
 func (h *CommentHandler) respondWithJSON(w http.ResponseWriter, data interface{}, statusCode int) {
 	// TODO: реализовать
 }
 
-// respondWithError отправляет JSON ошибку
-// TODO: Создать ErrorResponse и отправить используя respondWithJSON()
+// respondWithError использует общую форму ответа; доменные ошибки передавайте
+// в HandleServiceError для выбора корректного HTTP-статуса.
 func (h *CommentHandler) respondWithError(w http.ResponseWriter, message string, statusCode int) {
 	// TODO: реализовать
 }

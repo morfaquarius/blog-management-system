@@ -2,31 +2,17 @@ package middleware
 
 import "net/http"
 
-// TODO: Реализовать ToMiddleware()
-// Функция преобразует middleware функцию из одного формата в другой.
-// Нужна для совместимости разных типов middleware в chi.Router
+// TODO: Реализовать ToMiddleware() в internal/middleware/utils.go.
+// chi.Router.Use ожидает func(http.Handler) http.Handler, тогда как RequireAuth
+// сейчас имеет сигнатуру func(http.HandlerFunc) http.HandlerFunc. Адаптер нужен
+// для подключения этой существующей сигнатуры в chi.
 //
-// Сигнатура входного middleware:
-//   func(http.HandlerFunc) http.HandlerFunc
+// Оберните handler.ServeHTTP в http.HandlerFunc, передайте его в fn и верните
+// получившуюся функцию как http.Handler. Не вызывайте downstream handler при
+// создании middleware — только при обработке конкретного запроса.
 //
-// Сигнатура выходного middleware:
-//   func(http.Handler) http.Handler
-//
-// Функция должна:
-// 1. Принять middleware функцию fn типа func(http.HandlerFunc) http.HandlerFunc
-// 2. Вернуть функцию типа func(http.Handler) http.Handler
-// 3. Внутри возвращаемой функции:
-//    - Принять handler типа http.Handler
-//    - Вернуть новый http.Handler который:
-//      * Вызывает fn(handler.ServeHTTP)
-//      * Это возвращает http.HandlerFunc
-//      * Вызывает эту функцию с (w, r)
-//
-// Пример использования в main.go:
-//   router.Use(middleware.ToMiddleware(authMiddleware.RequireAuth))
-//
-// Это позволяет использовать middleware типа RequireAuth(http.HandlerFunc) http.HandlerFunc
-// с chi.Router который требует middleware типа func(http.Handler) http.Handler
+// Пример подключения в cmd/api/main.go:
+// router.Use(middleware.ToMiddleware(authMW.RequireAuth))
 func ToMiddleware(fn func(http.HandlerFunc) http.HandlerFunc) func(http.Handler) http.Handler {
 	// Обертка должна вызвать результат fn ровно один раз, передав исходные
 	// ResponseWriter и Request.

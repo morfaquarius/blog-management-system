@@ -21,9 +21,11 @@ func NewUserService(userRepo repository.UserRepository, jwtManager *auth.JWTMana
 	}
 }
 
-// TODO: Реализовать Register()
-// Валидировать, проверить существование email/username, захешировать пароль,
-// создать пользователя, генерировать JWT токен, вернуть TokenResponse
+// TODO: Реализовать Register() в internal/service/user_service.go.
+// Порядок: проверить req и его Validate(); проверить занятость email/username;
+// захешировать пароль через auth.HashPassword; создать model.User через
+// userRepo.Create; выпустить токен через jwtManager и вернуть TokenResponse,
+// где user преобразован в UserResponse. При любой ошибке остановить сценарий.
 // Ошибка уникального ограничения БД также должна стать ErrUserAlreadyExists:
 // предварительная Exists-проверка не защищает от параллельных регистраций.
 func (s *UserService) Register(ctx context.Context, req *model.UserCreateRequest) (*model.TokenResponse, error) {
@@ -31,25 +33,25 @@ func (s *UserService) Register(ctx context.Context, req *model.UserCreateRequest
 	return nil, nil
 }
 
-// TODO: Реализовать Login()
-// Валидировать, получить пользователя по email, проверить пароль,
-// генерировать JWT токен, вернуть TokenResponse
-// Для неизвестного email и неверного пароля возвращайте одинаковую доменную
-// ошибку, чтобы не раскрывать наличие учетной записи.
+// TODO: Реализовать Login() в internal/service/user_service.go.
+// Провалидируйте req, найдите пользователя по email и сравните пароль с
+// сохраненным хешем через auth.CheckPassword; при успехе выпустите JWT и
+// верните TokenResponse без пароля. Для неизвестного email и неверного пароля
+// возвращайте одну ErrInvalidCredentials, чтобы не раскрывать наличие аккаунта.
 func (s *UserService) Login(ctx context.Context, req *model.UserLoginRequest) (*model.TokenResponse, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetByID()
-// Получить пользователя из репозитория по ID
+// TODO: Реализовать GetByID(): получить запись из репозитория и преобразовать
+// отсутствующий результат в ErrUserNotFound; прочие ошибки БД обернуть и вернуть.
 func (s *UserService) GetByID(ctx context.Context, id int) (*model.User, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetByEmail()
-// Получить пользователя из репозитория по email
+// TODO: Реализовать GetByEmail() с тем же контрактом ошибок, что и GetByID().
+// Не возвращайте password-хеш в HTTP-ответ; handler должен использовать DTO.
 func (s *UserService) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	// TODO: реализовать
 	return nil, nil

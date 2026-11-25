@@ -16,52 +16,49 @@ func NewPostRepo(db *sql.DB) *PostRepo {
 	return &PostRepo{db: db}
 }
 
-// TODO: Реализовать Create()
-// INSERT INTO posts (title, content, author_id, created_at) VALUES (...) RETURNING id
-// Установить CreatedAt = time.Now(), сканировать ID в post
+// TODO: Реализовать Create через INSERT ... RETURNING id с параметрами.
+// Установите CreatedAt в UTC и заполните ID из Scan; AuthorID задается сервисом
+// по проверенному JWT-контексту, а не клиентом.
 func (r *PostRepo) Create(ctx context.Context, post *model.Post) error {
 	// TODO: реализовать
 	return nil
 }
 
-// TODO: Реализовать GetByID()
-// SELECT ... FROM posts WHERE id = $1
-// Если не найдена - вернуть nil, nil; если ошибка - вернуть fmt.Errorf()
+// TODO: Реализовать GetByID с явным списком столбцов и параметром $1.
+// При sql.ErrNoRows верните nil,nil; прочую ошибку БД оберните через %w.
 func (r *PostRepo) GetByID(ctx context.Context, id int) (*model.Post, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetAll()
-// SELECT ... FROM posts ORDER BY created_at DESC LIMIT $1 OFFSET $2
+// TODO: Реализовать GetAll параметрами limit/offset и стабильной сортировкой
+// (created_at DESC, затем id DESC). Закройте rows и проверьте rows.Err().
 func (r *PostRepo) GetAll(ctx context.Context, limit, offset int) ([]*model.Post, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetTotalCount()
-// SELECT COUNT(*) FROM posts
+// TODO: Реализовать GetTotalCount через QueryRowContext и вернуть ошибку
+// сканирования/БД с контекстом.
 func (r *PostRepo) GetTotalCount(ctx context.Context) (int, error) {
 	// TODO: реализовать
 	return 0, nil
 }
 
-// TODO: Реализовать Exists()
-// SELECT EXISTS(SELECT 1 FROM posts WHERE id = $1)
+// TODO: Реализовать Exists через SELECT EXISTS с параметром ID.
 func (r *PostRepo) Exists(ctx context.Context, id int) (bool, error) {
 	// TODO: реализовать
 	return false, nil
 }
 
-// TODO: Реализовать GetByAuthorID()
-// SELECT ... FROM posts WHERE author_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3
+// TODO: Реализовать GetByAuthorID с параметрами authorID/limit/offset,
+// стабильной сортировкой и проверкой ошибок итерации rows.
 func (r *PostRepo) GetByAuthorID(ctx context.Context, authorID int, limit, offset int) ([]*model.Post, error) {
 	// TODO: реализовать
 	return nil, nil
 }
 
-// TODO: Реализовать GetTotalCountByAuthorID()
-// SELECT COUNT(*) FROM posts WHERE author_id = $1
+// TODO: Реализовать GetTotalCountByAuthorID через параметризованный COUNT.
 func (r *PostRepo) GetTotalCountByAuthorID(ctx context.Context, authorID int) (int, error) {
 	// TODO: реализовать
 	return 0, nil

@@ -91,36 +91,41 @@ type CommentResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// TODO: Реализовать ToResponse()
-// Преобразовать User в UserResponse (скопировать поля, исключая Password)
+// TODO: Реализовать ToResponse() в internal/model/models.go.
+// Это единственный путь преобразования пользователя в публичный DTO:
+// скопируйте только поля UserResponse и никогда не переносите Password.
 func (u *User) ToResponse() UserResponse {
 	// TODO: реализовать
 	return UserResponse{}
 }
 
-// TODO: Реализовать Validate() для UserCreateRequest
-// Использовать validator.New().Struct(r)
+// TODO: Реализовать Validate() для UserCreateRequest через validator.New().Struct(r).
+// Учитывайте теги username (3-50 символов), email и пароль (не менее 6);
+// проверку строк только из пробелов добавьте явно, если validator-теги ее не покрывают.
 func (r *UserCreateRequest) Validate() error {
 	// TODO: реализовать
 	return nil
 }
 
-// TODO: Реализовать Validate() для UserLoginRequest
-// Использовать validator.New().Struct(r)
+// TODO: Реализовать Validate() для UserLoginRequest через validator.New().Struct(r).
+// Требуйте корректный email и непустой пароль; не применяйте к входу правила
+// минимальной длины создания пароля, чтобы не менять существующие учетные данные.
 func (r *UserLoginRequest) Validate() error {
 	// TODO: реализовать
 	return nil
 }
 
-// TODO: Реализовать Validate() для PostCreateRequest
-// Использовать validator.New().Struct(r)
+// TODO: Реализовать Validate() для PostCreateRequest через validator.New().Struct(r).
+// Заголовок должен быть непустым и длиной не более 200, content — непустым;
+// не принимайте авторский ID из этого DTO.
 func (r *PostCreateRequest) Validate() error {
 	// TODO: реализовать
 	return nil
 }
 
-// TODO: Реализовать Validate() для CommentCreateRequest
-// Использовать validator.New().Struct(r)
+// TODO: Реализовать Validate() для CommentCreateRequest через validator.New().Struct(r).
+// JSON-имя поля — text; допустимая длина от 1 до 1000 символов. ID поста
+// берется из URL и проверяется handler/service отдельно.
 func (r *CommentCreateRequest) Validate() error {
 	// TODO: реализовать
 	return nil

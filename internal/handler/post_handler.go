@@ -19,49 +19,46 @@ func NewPostHandler(postService service.PostServiceInterface, eventLogger *logge
 	}
 }
 
-// Create обрабатывает POST /posts
-// TODO: Получить userID из контекста, распарсить JSON, валидировать, вызвать postService.Create()
-// Вернуть PostResponse со статусом 201 или ошибку
-// Не принимайте author_id из тела JSON: автор определяется токеном в middleware.
+// Create обрабатывает защищенный POST /posts: возьмите authorID из auth context,
+// декодируйте/провалидируйте PostCreateRequest и вызовите postService.Create.
+// Верните PostResponse со статусом 201. Не принимайте author_id из тела JSON.
 // После успешного сохранения отправьте в eventLogger событие с ID пользователя
-// и ID созданного поста.
+// и ID созданного поста; при ошибке БД не регистрируйте событие.
 func (h *PostHandler) Create(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// GetByID обрабатывает GET /posts/{id} — публичный endpoint.
-// TODO: Извлечь положительный ID через chi.URLParam(r, "id"),
-// вызвать postService.GetByID()
-// и вернуть PostResponse (200) или JSON-ошибку.
+// GetByID обрабатывает публичный GET /posts/{id}: извлеките положительный ID
+// через chi.URLParam и strconv.Atoi, вызовите сервис и верните PostResponse
+// (200) либо общую JSON-ошибку. Этот маршрут не требует JWT.
 func (h *PostHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// GetAll обрабатывает GET /posts?limit=10&offset=0
-// TODO: Получить limit и offset из query, валидировать (limit 1-100, default 10),
-// вызвать postService.GetAll(). Вернуть список постов и общее количество
-// Обрабатывайте ошибку strconv.Atoi отдельно от диапазона; не превращайте
-// некорректное значение параметра в молчаливый default.
+// GetAll обрабатывает публичный GET /posts?limit=10&offset=0. При отсутствии
+// параметров используйте limit=10 и offset=0; при наличии разбирайте числа,
+// проверяйте limit 1-100 и offset >= 0. Не заменяйте ошибочный ввод default.
+// Ответ содержит {"items":[...],"total":N}.
 func (h *PostHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// GetByAuthor — дополнительный маршрут GET /posts/author/{authorID}?limit=10&offset=0.
-// Это необязательное расширение; сначала реализуйте endpoint из задания.
-// TODO: Извлечь authorID из URL, получить limit и offset из query,
-// вызвать postService.GetByAuthor(). Вернуть список постов автора и общее количество.
+// GetByAuthor обслуживает необязательный GET
+// /posts/author/{authorID}?limit=10&offset=0. Реализуйте и регистрируйте его
+// только после обязательных маршрутов; проверьте, что chi не трактует
+// "author" как параметр {id} маршрута /posts/{id}.
 func (h *PostHandler) GetByAuthor(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// respondWithJSON отправляет JSON ответ
-// TODO: Установить Content-Type, WriteHeader, закодировать JSON
+// respondWithJSON устанавливает application/json, записывает статус и кодирует
+// один JSON-ответ. Не вызывайте его после того, как уже записан другой ответ.
 func (h *PostHandler) respondWithJSON(w http.ResponseWriter, data interface{}, statusCode int) {
 	// TODO: реализовать
 }
 
-// respondWithError отправляет JSON ошибку
-// TODO: Создать ErrorResponse и отправить используя respondWithJSON()
+// respondWithError использует общую форму ответа; ошибки сервиса сначала
+// сопоставляйте с HTTP-статусом через HandleServiceError.
 func (h *PostHandler) respondWithError(w http.ResponseWriter, message string, statusCode int) {
 	// TODO: реализовать
 }

@@ -11,30 +11,33 @@ import (
 type contextKey string
 
 const (
-	// TODO: Определить константы для ключей контекста
-	// UserIDKey, UserEmailKey, UserNameKey типа contextKey
+	// Эти ключи используются только после проверки JWT, чтобы handlers/services
+	// получали идентичность пользователя из доверенного контекста запроса.
 	UserIDKey    contextKey = "userID"
 	UserEmailKey contextKey = "userEmail"
 	UserNameKey  contextKey = "username"
 )
 
-// TODO: Добавить структура AuthMiddleware с полем jwtManager
-// Конструктор NewAuthMiddleware(jwtManager *auth.JWTManager) *AuthMiddleware
+// AuthMiddleware хранит общий JWTManager, созданный один раз при старте
+// приложения и используемый для проверки токенов на каждом запросе.
 type AuthMiddleware struct {
 	jwtManager *auth.JWTManager
 }
 
-// TODO: Реализовать конструктор NewAuthMiddleware
+// TODO: Реализовать NewAuthMiddleware в internal/middleware/auth.go.
+// Верните middleware, связанный с переданным JWTManager; не создавайте новый
+// менеджер и не читайте секрет из окружения внутри HTTP-запроса.
 func NewAuthMiddleware(jwtManager *auth.JWTManager) *AuthMiddleware {
 	return &AuthMiddleware{
 		jwtManager: jwtManager,
 	}
 }
 
-// TODO: Реализовать метод RequireAuth(next http.HandlerFunc) http.HandlerFunc
-// Извлечь токен из заголовка Authorization, валидировать,
-// добавить userID, email, username в контекст, передать управление дальше
-// Вернуть 401 если токена нет или он невалидный
+// TODO: Реализовать RequireAuth для защищенных маршрутов.
+// Принимайте только заголовок Authorization вида "Bearer <token>", проверяйте
+// его через jwtManager.ValidateToken, помещайте user_id/email/username из
+// проверенных claims в context и вызывайте next один раз. При отсутствующем,
+// некорректном или просроченном токене верните JSON 401 и не вызывайте next.
 func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 	// При отказе обязательно return до вызова next. Context создавайте через
 	// r.WithContext, а claims используйте только после успешной проверки подписи.
@@ -44,10 +47,10 @@ func (m *AuthMiddleware) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// TODO: Реализовать метод OptionalAuth(next http.HandlerFunc) http.HandlerFunc
-// Попытаться извлечь и валидировать токен, но не требовать его
-// Если токена нет или он невалидный - пропустить и передать управление дальше
-// Если токен валидный - добавить userID, email, username в контекст
+// TODO: Реализовать OptionalAuth для публичных маршрутов, которым нужен
+// необязательный пользовательский контекст. При валидном токене добавьте claims;
+// при его отсутствии или ошибке валидации вызовите next без пользовательских
+// значений и не превращайте публичный запрос в 401.
 func (m *AuthMiddleware) OptionalAuth(next http.HandlerFunc) http.HandlerFunc {
 	// Используйте только на публичных маршрутах, которым действительно нужен
 	// необязательный контекст пользователя.
@@ -57,31 +60,29 @@ func (m *AuthMiddleware) OptionalAuth(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// TODO: Реализовать GetUserIDFromContext(ctx context.Context)
-// Получить значение из контекста по UserIDKey и привести к типу int
-// Вернуть (userID int, ok bool)
+// TODO: Реализовать GetUserIDFromContext: проверить наличие значения и тип int;
+// возвращайте ok=false, если middleware не добавил ID или тип не совпадает.
 func GetUserIDFromContext(ctx context.Context) (int, bool) {
 	// TODO: реализовать
 	return 0, false
 }
 
-// TODO: Реализовать GetUserEmailFromContext(ctx context.Context)
-// Получить значение из контекста по UserEmailKey и привести к типу string
+// TODO: Реализовать GetUserEmailFromContext с проверкой наличия значения и типа.
 func GetUserEmailFromContext(ctx context.Context) (string, bool) {
 	// TODO: реализовать
 	return "", false
 }
 
-// TODO: Реализовать GetUsernameFromContext(ctx context.Context)
-// Получить значение из контекста по UserNameKey и привести к типу string
+// TODO: Реализовать GetUsernameFromContext с проверкой наличия значения и типа.
 func GetUsernameFromContext(ctx context.Context) (string, bool) {
 	// TODO: реализовать
 	return "", false
 }
 
-// TODO: Реализовать приватную функцию extractToken(r *http.Request)
-// Получить заголовок Authorization, проверить формат "Bearer <token>"
-// Вернуть токен (вторую часть) или пустую строку если формат неверный
+// TODO: Реализовать extractToken: прочитайте Authorization и верните только
+// непустую вторую часть корректного bearer-заголовка (без лишних частей).
+// Возвращайте пустую строку для отсутствующего/некорректного заголовка; никогда
+// не логируйте содержимое токена.
 func extractToken(r *http.Request) string {
 	// Принимайте только Bearer-токен без пустого значения и лишних частей.
 	// TODO: реализовать
