@@ -1,17 +1,9 @@
 package handler
 
 import (
-	"advanced-blog-management-system/internal/errors/apperrors"
 	"advanced-blog-management-system/internal/logger"
-	"advanced-blog-management-system/internal/middleware"
-	"advanced-blog-management-system/internal/model"
 	"advanced-blog-management-system/internal/service"
-	"encoding/json"
 	"net/http"
-	"strconv"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-playground/validator/v10"
 )
 
 type CommentHandler struct {
@@ -26,16 +18,17 @@ func NewCommentHandler(commentService service.CommentServiceInterface, eventLogg
 	}
 }
 
-// Create обрабатывает POST /api/posts/{postId}/comments
+// Create обрабатывает POST /posts/{id}/comments
 // TODO: Получить userID из контекста, извлечь postID, распарсить JSON, валидировать,
 // вызвать commentService.Create(). Вернуть CommentResponse (201) или ошибку
-// postID берите из URL и проверяйте через strconv.Atoi; тело запроса содержит
-// текст комментария, но не должно менять маршрутный postID.
+// ID бери из chi.URLParam(r, "id") и проверяй через strconv.Atoi; тело содержит
+// {"text":"..."}, а post_id из JSON принимать нельзя.
+// После успешного создания передайте в eventLogger ID автора и комментария.
 func (h *CommentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// GetByPost обрабатывает GET /api/posts/{postId}/comments?limit=10&offset=0
+// GetByPost обрабатывает GET /posts/{id}/comments?limit=10&offset=0
 // TODO: Извлечь postID, получить limit и offset, валидировать,
 // вызвать commentService.GetByPost(). Вернуть список комментариев и общее количество
 func (h *CommentHandler) GetByPost(w http.ResponseWriter, r *http.Request) {

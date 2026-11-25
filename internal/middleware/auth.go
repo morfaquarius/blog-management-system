@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 )
 
 // contextKey - кастомный тип, чтобы избежать коллизии

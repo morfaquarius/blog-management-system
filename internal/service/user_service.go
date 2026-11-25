@@ -1,13 +1,10 @@
 package service
 
 import (
-	"advanced-blog-management-system/internal/errors/apperrors"
 	"advanced-blog-management-system/internal/model"
 	"advanced-blog-management-system/internal/repository"
 	"advanced-blog-management-system/pkg/auth"
 	"context"
-	"errors"
-	"fmt"
 )
 
 type UserService struct {

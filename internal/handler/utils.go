@@ -1,12 +1,7 @@
 package handler
 
 import (
-	"advanced-blog-management-system/internal/errors/apperrors"
-	"encoding/json"
-	"errors"
 	"net/http"
-
-	"github.com/go-playground/validator/v10"
 )
 
 // ErrorResponse представляет структуру ошибки в ответе
@@ -27,12 +22,15 @@ func WriteError(w http.ResponseWriter, message string, statusCode int) {
 // TODO: Реализовать HandleServiceError(w http.ResponseWriter, err error)
 // 1. Проверить тип ошибки используя errors.Is()
 // 2. Для каждого типа ошибки из apperrors вернуть нужный HTTP статус:
-//    - ErrUserAlreadyExists -> 409 Conflict
-//    - ErrInvalidCredentials -> 401 Unauthorized
+//   - ErrUserAlreadyExists -> 409 Conflict
+//   - ErrInvalidCredentials -> 401 Unauthorized
+//    - ErrUserNotFound -> 404 Not Found
 //    - ErrPostNotFound -> 404 Not Found
 //    - ErrCommentNotFound -> 404 Not Found
+//    - ErrInvalidPostID -> 400 Bad Request
 //    - ErrForbidden -> 403 Forbidden
 //    - ErrUnauthorized -> 401 Unauthorized
+//
 // 3. Проверить validator.ValidationErrors -> 400 Bad Request
 // 4. Для других ошибок -> 500 Internal Server Error
 // 5. Использовать WriteError() для отправки ответа с нужным сообщением

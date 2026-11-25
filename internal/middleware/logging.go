@@ -3,7 +3,6 @@ package middleware
 import (
 	"log"
 	"net/http"
-	"time"
 )
 
 type LoggingMiddleware struct {
@@ -15,7 +14,8 @@ func NewLoggingMiddleware(logger *log.Logger) *LoggingMiddleware {
 }
 
 // TODO: Реализовать метод Logger(next http.Handler) http.Handler
-// Логировать каждый запрос: IP адрес, метод, путь, статус код, время выполнения
+// Логировать в консоль каждый запрос: IP-адрес, метод, путь, статус-код и время
+// выполнения. Не логировать Authorization или тело запроса с паролем.
 func (m *LoggingMiddleware) Logger(next http.Handler) http.Handler {
 	// Обертка ResponseWriter должна фиксировать статус при WriteHeader; если
 	// handler ничего не записал, HTTP подразумевает статус 200.

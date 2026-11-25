@@ -2,6 +2,11 @@ package main
 
 import (
 	"log"
+
+	"advanced-blog-management-system/internal/handler"
+	"advanced-blog-management-system/internal/middleware"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
@@ -13,14 +18,14 @@ func main() {
 	// TODO: Реализовать загрузку конфигурации из переменных окружения
 	// Config должен содержать: ServerHost, ServerPort, DB параметры, JWT параметры
 
-	// TODO: Найти корневую папку проекта (поддержка Docker)
-	// Искать папку migrations в текущей директории и выше (до 2 уровней)
+	// TODO: Прочитать MIGRATIONS_DIR (локально migrations, в контейнере
+	// /app/migrations); не зависеть от текущей рабочей директории.
 
 	// TODO: Подключиться к PostgreSQL БД
-	// Использовать database.NewPostgresDB() и database.Migrate()
+	// Использовать database.NewPostgresDB() и database.Migrate(db, migrationsDir)
 
 	// TODO: Инициализировать JWTManager
-	// auth.NewJWTManager(jwtSecret, jwtExpiryHours)
+	// auth.NewJWTManager(jwtSecret, jwtExpiryHours) возвращает (*JWTManager, error)
 
 	// TODO: Инициализировать репозитории
 	// Сверьте имена конструкторов с исходниками: сейчас это NewUserRepo,
@@ -31,6 +36,8 @@ func main() {
 	// NewPostService(postRepo, userRepo)
 	// NewCommentService(commentRepo, postRepo)
 
+	// TODO: Создать EventLogger с EVENT_LOG_PATH (по умолчанию logs.txt),
+	// вызвать Start() до запуска HTTP-сервера и обработать ошибку конструктора.
 	// TODO: Инициализировать handlers
 	// NewAuthHandler(userService), NewPostHandler(postService, eventLogger), NewCommentHandler(commentService, eventLogger)
 
@@ -46,29 +53,29 @@ func main() {
 	// Блокировать main пока не получен сигнал
 
 	// TODO: Graceful shutdown
-	// Завершить сервер с таймаутом 30 секунд и закрыть БД
+	// Завершить сервер с таймаутом 30 секунд, затем вызвать eventLogger.Stop()
+	// (он должен дописать буфер событий и закрыть файл), затем закрыть БД.
 
 	log.Println("Server starting... (TODO: implement main.go)")
 }
 
-func setupRouter(authHandler interface{}, postHandler interface{}, commentHandler interface{}, loggingMW interface{}, authMW interface{}) interface{} {
-	// После выбора сигнатур замените interface{} конкретными типами handler-ов
-	// и *chi.Router: компилятор должен проверять wiring зависимостей.
+func setupRouter(authHandler *handler.AuthHandler, postHandler *handler.PostHandler, commentHandler *handler.CommentHandler, loggingMW *middleware.LoggingMiddleware, authMW *middleware.AuthMiddleware) *chi.Mux {
 	// TODO: Создать chi роутер
 
 	// TODO: Зарегистрировать глобальные middleware
 	// Recovery, Logger, CORS
 
-	// TODO: Зарегистрировать публичные эндпоинты
-	// POST /api/register, POST /api/login, GET /api/health
-	// GET /api/posts, GET /api/posts/{id}
-	// GET /api/posts/{postId}/comments
-	// PostHandler также содержит GetByAuthor; зарегистрируйте его отдельно и
-	// проверьте, что /posts/{id} не перехватывает /posts/author/{authorID}.
+	// TODO: Зарегистрировать обязательные публичные endpoint:
+	// POST /register, POST /login, GET /health (JSON {"status":"ok"}),
+	// GET /posts, GET /posts/{id}, GET /posts/{id}/comments.
+	// GET /health должен вернуть Content-Type application/json, статус 200 и
+	// JSON-объект {"status":"ok"}.
+	// Маршрут /posts/author/{authorID} в PostHandler — необязательное расширение.
 
 	// TODO: Зарегистрировать защищенные эндпоинты (требуют AuthMiddleware)
-	// POST /api/posts
-	// POST /api/posts/{postId}/comments
+	// POST /posts
+	// POST /posts/{id}/comments
+	// После успешного POST обработчик передает событие в eventLogger.
 
 	// TODO: Вернуть настроенный *chi.Router
 

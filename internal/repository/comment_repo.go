@@ -4,8 +4,6 @@ import (
 	"advanced-blog-management-system/internal/model"
 	"context"
 	"database/sql"
-	"fmt"
-	"time"
 )
 
 // После rows.Next() обязательно проверьте rows.Err(): ошибка может возникнуть

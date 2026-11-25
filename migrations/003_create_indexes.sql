@@ -1,5 +1,7 @@
 -- Создаем индексы
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_posts_author_id ON posts(author_id);
-CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id);
-CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_author_created_at
+    ON posts(author_id, created_at DESC, id DESC);
+CREATE INDEX IF NOT EXISTS idx_comments_post_created_at
+    ON comments(post_id, created_at ASC, id ASC);
+CREATE INDEX IF NOT EXISTS idx_posts_created_at
+    ON posts(created_at DESC, id DESC);

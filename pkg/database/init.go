@@ -2,9 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
-	"log"
-	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -23,13 +20,16 @@ type Config struct {
 // Функция должна:
 // 1. Сформировать DSN строку используя GetDSN(cfg)
 // 2. Открыть подключение используя sql.Open("postgres", dsn)
-//    - Проверить ошибку открытия подключения
+//   - Проверить ошибку открытия подключения
+//
 // 3. Проверить подключение используя db.Ping()
-//    - Если ошибка - вернуть fmt.Errorf("failed to ping database: %w", err)
+//   - Если ошибка - вернуть fmt.Errorf("failed to ping database: %w", err)
+//
 // 4. Настроить пул соединений:
-//    - db.SetMaxOpenConns(25) - максимум открытых соединений
-//    - db.SetMaxIdleConns(25) - максимум неиспользуемых в пуле
-//    - db.SetConnMaxLifetime(5 * time.Minute) - время жизни соединения
+//   - db.SetMaxOpenConns(25) - максимум открытых соединений
+//   - db.SetMaxIdleConns(25) - максимум неиспользуемых в пуле
+//   - db.SetConnMaxLifetime(5 * time.Minute) - время жизни соединения
+//
 // 5. Залогировать "Connected to PostgreSQL database" используя log.Println()
 // 6. Вернуть *sql.DB
 //
@@ -48,12 +48,13 @@ func NewPostgresDB(cfg Config) (*sql.DB, error) {
 // 1. Используйте fmt.Sprintf() для форматирования
 // 2. Формат DSN: "host=%s port=%d user=%s password=%s dbname=%s sslmode=%s"
 // 3. Подставьте значения из Config в нужном порядке:
-//    - cfg.Host (например, "localhost")
-//    - cfg.Port (например, 5432)
-//    - cfg.User (например, "postgres")
-//    - cfg.Password
-//    - cfg.DBName (например, "blogdb")
-//    - cfg.SSLMode (например, "disable")
+//   - cfg.Host (например, "localhost")
+//   - cfg.Port (например, 5432)
+//   - cfg.User (например, "postgres")
+//   - cfg.Password
+//   - cfg.DBName (например, "blogdb")
+//   - cfg.SSLMode (например, "disable")
+//
 // 4. Вернуть построенную строку
 // Пример результата: "host=localhost port=5432 user=postgres password=secret dbname=blogdb sslmode=disable"
 // При формировании DSN корректно обработайте специальные символы в значениях

@@ -2,9 +2,6 @@ package auth
 
 import (
 	"errors"
-	"unicode"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 var (

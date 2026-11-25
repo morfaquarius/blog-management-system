@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"github.com/go-playground/validator/v10"
 )
 
 // User представляет модель пользователя в системе
@@ -25,10 +23,11 @@ type Post struct {
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
-// Comment представляет модель комментария к посту
+// Comment представляет запись комментария в PostgreSQL.
+// Внешнее API называет поле Content как "text".
 type Comment struct {
 	ID        int       `json:"id" db:"id"`
-	Content   string    `json:"content" db:"content"`
+	Content   string    `json:"text" db:"content"`
 	PostID    int       `json:"post_id" db:"post_id"`
 	AuthorID  int       `json:"author_id" db:"author_id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
@@ -54,10 +53,9 @@ type PostCreateRequest struct {
 	Content string `json:"content" validate:"required,min=1"`
 }
 
-// CommentCreateRequest представляет запрос на создание комментария
+// CommentCreateRequest принимает text; ID поста берется из URL.
 type CommentCreateRequest struct {
-	Content string `json:"content" validate:"required,min=1,max=1000"`
-	PostID  int    `json:"post_id" validate:"required,gt=0"`
+	Content string `json:"text" validate:"required,min=1,max=1000"`
 }
 
 // UserResponse - структура для ответа с данными пользователя (без пароля)
@@ -77,21 +75,20 @@ type TokenResponse struct {
 
 // PostResponse - структура для ответа с данными поста
 type PostResponse struct {
-	ID        int          `json:"id"`
-	Title     string       `json:"title"`
-	Content   string       `json:"content"`
-	Author    UserResponse `json:"author"`
-	CreatedAt time.Time    `json:"created_at"`
+	ID        int       `json:"id"`
+	AuthorID  int       `json:"author_id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // CommentResponse - структура для ответа с данными комментария
 type CommentResponse struct {
-	ID        int          `json:"id"`
-	Content   string       `json:"content"`
-	PostID    int          `json:"post_id"`
-	Author    UserResponse `json:"author"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
+	ID        int       `json:"id"`
+	PostID    int       `json:"post_id"`
+	AuthorID  int       `json:"author_id"`
+	Content   string    `json:"text"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // TODO: Реализовать ToResponse()

@@ -1,24 +1,23 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:15-alpine
     container_name: blog_postgres_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: blog_db
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-blog_db}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-blog_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # TODO: Добавить сервис приложения app
+  # Раскомментируйте сервис после реализации HTTP-сервера в api/main.go.
+  # Пока точка входа является заглушкой, приложение не обслуживает API.
   # app:
   #   build: .
   #   container_name: blog_api
@@ -27,11 +26,14 @@ services:
   #   environment:
   #     DB_HOST: db
   #     DB_PORT: 5432
-  #     DB_USER: postgres
-  #     DB_PASSWORD: postgres
-  #     DB_NAME: blog_db
+  #     DB_USER: ${DB_USER:-postgres}
+  #     DB_PASSWORD: ${DB_PASSWORD:-postgres}
+  #     DB_NAME: ${DB_NAME:-blog_db}
   #     DB_SSLMODE: disable
-  #     JWT_SECRET: your-secret-key
+  #     JWT_SECRET: ${JWT_SECRET:?Задайте JWT_SECRET в .env}
+  #     JWT_EXPIRY_HOURS: ${JWT_EXPIRY_HOURS:-24}
+  #     MIGRATIONS_DIR: /app/migrations
+  #     EVENT_LOG_PATH: /app/logs.txt
   #     SERVER_HOST: 0.0.0.0
   #     SERVER_PORT: 8080
   #   depends_on:

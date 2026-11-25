@@ -13,10 +13,10 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o api ./cmd/api/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o api ./api
 
 # Runtime stage
-FROM alpine:latest
+FROM scratch
 
 WORKDIR /app
 
@@ -25,9 +25,11 @@ COPY --from=builder /app/migrations ./migrations
 
 # Copy built application from builder
 COPY --from=builder /app/api .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Expose port
 EXPOSE 8080
+ENV MIGRATIONS_DIR=/app/migrations
 
 # Run application
 CMD ["./api"]

@@ -4,17 +4,14 @@ import (
 	"advanced-blog-management-system/internal/model"
 	"advanced-blog-management-system/internal/repository"
 	"context"
-	"fmt"
 )
 
 type CommentService struct {
-	repo     *repository.CommentRepo
+	repo     repository.CommentRepository
 	postRepo repository.PostRepository
 }
 
-// TODO: При развитии слоя рассмотрите зависимость от repository.CommentRepository,
-// а не от конкретного CommentRepo: так сервис проще изолировать в unit-тестах.
-func NewCommentService(repo *repository.CommentRepo, postRepo repository.PostRepository) *CommentService {
+func NewCommentService(repo repository.CommentRepository, postRepo repository.PostRepository) *CommentService {
 	return &CommentService{
 		repo:     repo,
 		postRepo: postRepo,
@@ -25,8 +22,8 @@ func NewCommentService(repo *repository.CommentRepo, postRepo repository.PostRep
 // Валидировать postID, проверить что пост существует,
 // валидировать content (не пусто, не более 1000 символов),
 // создать комментарий, сохранить в БД, вернуть Comment
-// userID должен приходить из middleware, а postID — из параметра URL; не
-// позволяйте полю post_id в теле запроса переопределить родительский пост.
+// userID должен приходить из middleware, а postID — из параметра URL; тело
+// запроса использует поле text и не содержит post_id.
 func (s *CommentService) Create(ctx context.Context, userID, postID int, content string) (*model.Comment, error) {
 	// TODO: реализовать
 	return nil, nil

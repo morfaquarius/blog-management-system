@@ -1,13 +1,8 @@
 package handler
 
 import (
-	"advanced-blog-management-system/internal/errors/apperrors"
-	"advanced-blog-management-system/internal/model"
 	"advanced-blog-management-system/internal/service"
-	"encoding/json"
 	"net/http"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type AuthHandler struct {
@@ -22,17 +17,17 @@ func NewAuthHandler(userService service.UserServiceInterface) *AuthHandler {
 	}
 }
 
-// Register обрабатывает POST /api/register
+// Register обрабатывает POST /register
 // TODO: Проверить метод, распарсить JSON, валидировать, вызвать userService.Register()
 // Вернуть TokenResponse со статусом 201 или ошибку с нужным кодом
 // При некорректном JSON верните 400 и завершите handler; не вызывайте сервис
-// с частично декодированным DTO. Успешный ответ должен содержать только
-// UserResponse, никогда не возвращайте model.User с Password.
+// с частично декодированным DTO. В TokenResponse поле user должно содержать
+// только UserResponse; не возвращайте model.User с Password.
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	// TODO: реализовать
 }
 
-// Login обрабатывает POST /api/login
+// Login обрабатывает POST /login
 // TODO: Проверить метод, распарсить JSON, валидировать, вызвать userService.Login()
 // Вернуть TokenResponse со статусом 200 или ошибку с нужным кодом
 // Ошибки неверного email и пароля должны иметь одинаковый внешний ответ.

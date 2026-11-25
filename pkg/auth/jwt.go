@@ -21,20 +21,19 @@ type Claims struct {
 }
 
 // TODO: Добавить структуру JWTManager с полями secretKey []byte и ttl time.Duration
-// Реализовать конструктор NewJWTManager(secretKey string, ttlHours int) *JWTManager
+// Реализовать конструктор NewJWTManager(secretKey string, ttlHours int) (*JWTManager, error)
 type JWTManager struct {
 	secretKey []byte
 	ttl       time.Duration
 }
 
-// TODO: Реализовать конструктор NewJWTManager
-// Параметры: secretKey string, ttlHours int
-// Вернуть: *JWTManager с инициализированными полями
-func NewJWTManager(secretKey string, ttlHours int) *JWTManager {
+// TODO: Реализовать конструктор NewJWTManager.
+// Вернуть ошибку при пустом секрете или неположительном сроке действия.
+func NewJWTManager(secretKey string, ttlHours int) (*JWTManager, error) {
 	// Проверьте непустой секрет и положительный TTL. Секрет должен поступать из
 	// конфигурации, не храниться в исходном коде и не попадать в логи.
 	// TODO: реализовать
-	return nil
+	return nil, nil
 }
 
 // TODO: Реализовать метод GenerateToken(userID int, email, username string) (string, time.Time, error)
