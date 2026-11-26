@@ -2,7 +2,7 @@ package service
 
 import (
 	"advanced-blog-management-system/internal/model"
-	"advanced-blog-management-system/internal/repository"
+	"advanced-blog-management-system/internal/model/repository"
 	"context"
 )
 

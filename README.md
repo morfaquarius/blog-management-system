@@ -121,6 +121,7 @@ Blog Management System — учебная основа для создания R
 - **Язык:** Go 1.24.5
 - **Минимальная версия для этого шаблона:** Go 1.24.5 (хотя дипломное задание в целом допускает Go 1.21+)
 - **База данных:** PostgreSQL 15
+- **Драйвер PostgreSQL:** `github.com/jackc/pgx/v5/stdlib` через `database/sql`
 - **HTTP-маршрутизация:** `chi`
 - **Валидация:** `go-playground/validator`
 - **Аутентификация:** JWT (`golang-jwt/jwt`)
@@ -559,7 +560,7 @@ docker compose exec db psql -U postgres -d blog_db
 В `pkg/database/init.go`, в пакете `database`, реализуйте имеющиеся заготовки `GetDSN(cfg Config) string`, `NewPostgresDB(cfg Config) (*sql.DB, error)`, `TestConnection(db *sql.DB) error` и `Close(db *sql.DB)`. Конфигурационная структура `Config` объявлена в этом же файле. В `cmd/api/main.go` прочитайте значения окружения (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_SSLMODE`) и соберите из них `database.Config`; значения по умолчанию и переменные описаны в разделе «Конфигурация». В частности:
 
 1. Соберите DSN из `database.Config`; не печатайте его в лог, так как он содержит пароль.
-2. Откройте `*sql.DB` через `sql.Open`. Этот вызов создает пул, но сам по себе не подтверждает соединение.
+2. Откройте `*sql.DB` через `sql.Open("pgx", dsn)`. Драйвер `pgx/v5/stdlib` регистрируется blank-import в `pkg/database/init.go`; вызов создает пул, но сам по себе не подтверждает соединение.
 3. Вызовите `Ping`/`PingContext`, чтобы проверить доступность PostgreSQL.
 4. Если проверка не удалась, закройте уже созданный пул и верните ошибку с причиной через `%w`.
 5. Настройте пул соединений согласно TODO в файле и закройте его при ошибке старта/завершении приложения.
